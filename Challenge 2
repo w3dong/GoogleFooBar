@@ -1,0 +1,69 @@
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
+
+class Solution {
+    public static int solution(int[] l) {
+        // store all possible integer given certain # of digit 
+        List<Integer> sums = new ArrayList<>();
+        int sum = 0;
+        int n = l.length;
+        boolean done = false;
+        List<int[]> combinations;
+        // find all combination of digits
+        // from choosing all digits and give up 1 digit by one time if it does not work out
+        for (int i = n; i > 0; i--){
+            combinations = c(n, i, l);
+            for (int[] arr : combinations){
+                // if a valid number is found in given number of digit
+                if (Arrays.stream(arr).sum() % 3 == 0){
+                    // sort digit in ascending order
+                    Arrays.sort(arr);
+                    // 1,2,3,9 --> 93 --> 932 , etc
+                    // generate largest integer by given digits
+                    for (int j = arr.length - 1; j >= 0;j--){
+                        sum = sum * 10 + arr[j];
+                    }
+                    // store this possible integer in sums 
+                    sums.add(sum);
+                    // we found solution, mark done
+                    done = true;
+                    // in case other integer is possible in given # of digits, reset sum
+                    // ex. {2,1,5,7} --> with # of digit = 2, 21 / 75 both are possible
+                    sum = 0;
+                }
+            }
+            if (done){
+                break;
+            }
+        }
+        // return the maximum possible number we found
+        if (sums.size() > 0){
+            int max = Collections.max(sums);
+            return max;
+        }
+        return 0;
+    }
+    // find and return all possible ways to choose i digit from a integer list l 
+    public static void helper (List<int[]> combinations, int[] l,
+       int[] c,
+       int start, int end, int i){
+           if (i == c.length){
+               int[] combination = c.clone();
+               combinations.add(combination);
+           }
+           else if (start <= end){
+               c[i] = l[start];
+               helper(combinations, l, c, start + 1, end, i+1);
+               helper(combinations, l, c, start + 1, end, i);
+           }
+     }
+    // return all possible ways to choose i digit from a integer list l 
+    public static List<int[]> c(int n, int r, int[] l){
+        List<int[]> combinations = new ArrayList<>();
+        helper(combinations, l, new int[r], 0, n-1, 0);
+        return combinations;
+    }
+    
+}
