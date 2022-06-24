@@ -1,0 +1,35 @@
+public class Solution {
+    public static int solution(int start, int length) {
+        // last (largest) ID number 
+        int largest = start + length * length;
+        // used to check place to update limit
+        int counter = 0;
+        // maximum # of ID to add to sum for specific row
+        int limit = length; 
+        // sum to return
+        int sum = 0;
+        // start ID
+        int i = start;
+        // loop ID from smallest to largest possible ID
+        while (i < largest){
+            // when it's last valid ID in row we want to add
+            if (counter == limit - 1){
+                // add it into sum
+                sum = sum ^ i; 
+                // skip # of ID for specific row
+                // ex. length - counter = 0 -> 1 -> 2 ...
+                i += (length - counter);
+                // reduce limit, update counter to 0
+                limit--;
+                counter = 0;
+            }
+            // if counter < limit, add it to XOR sum
+            else if (counter < limit){
+                sum = sum ^ i; 
+                i++;
+                counter++;
+            }
+        }
+        return sum; 
+    }
+}
